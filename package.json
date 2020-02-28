@@ -1,9 +1,13 @@
 {
   "name": "dicty-hooks",
+  "version": "0.0.0-semantically-released",
   "author": "wildlifehexagon",
   "module": "dist/dicty-hooks.esm.js",
-  "version": "0.1.0",
-  "license": "BSD 2-Clause",
+  "license": "BSD-2-Clause",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dictyBase/dicty-hooks.git"
+  },
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -13,6 +17,7 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test --passWithNoTests",
+    "test-coverage": "tsdx test --passWithNoTests --coverage",
     "lint": "tsdx lint",
     "prepare": "tsdx build"
   },
@@ -20,12 +25,14 @@
     "react": ">=16"
   },
   "devDependencies": {
+    "@testing-library/react-hooks": "^3.2.1",
     "@types/jest": "^25.1.3",
     "@types/react": "^16.9.23",
     "@types/react-dom": "^16.9.5",
     "husky": "^4.2.3",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-test-renderer": "^16.13.0",
     "tsdx": "^0.12.3",
     "tslib": "^1.11.1",
     "typescript": "^3.8.2"
@@ -34,5 +41,10 @@
     "hooks": {
       "pre-commit": "tsdx lint"
     }
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/hooks/**/*.{js,jsx,ts,tsx}"
+    ]
   }
 }
