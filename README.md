@@ -1,4 +1,4 @@
-# Dicty Hooks
+# Dicty Hooks 🎣
 
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-blue.svg)](LICENSE)  
 ![GitHub tag](https://img.shields.io/github/v/tag/dictyBase/dicty-hooks)  
@@ -29,4 +29,43 @@
 
 This is a React library of hooks that can be reused throughout any dictyBase web applications.
 
-More documentation coming soon.
+## Install
+
+```bash
+npm install dictyBase/dicty-hooks
+```
+
+To install a specific version, add a tag to the end:
+
+```bash
+npm install dictyBase/dicty-hooks#1.0.0
+```
+
+## Usage
+
+Examples of how to use each hook are provided individually.
+
+- [useFetchRefreshToken](./docs/useFetchRefreshToken.md)
+- [useFooter](./docs/useFooter.md)
+- [useNavbar](./docs/useFetchRefreshToken.md)
+
+## Development
+
+- Clone the `develop` branch of this repository
+- Run `npm install`
+- Create a new branch (i.e. `feature/useFoo`)
+- Add custom hook to `/src/hooks`
+- Add unit tests to `/test`
+- Add export to `/src/index.ts`
+- Commit all changes and open a pull request. If all checks pass, it is ready
+  to merge to `develop`.
+
+If you are ready to cut a new release, you can then merge into `master`. This
+will trigger a GitHub Action that uses `semantic-release` to create a new tag.
+
+_Note: all content must be written in TypeScript._
+
+## Active Developers
+
+<a href="https://sourcerer.io/cybersiddhu"><img src="https://sourcerer.io/assets/avatar/cybersiddhu" height="80px" alt="Sourcerer"></a>
+<a href="https://sourcerer.io/wildlifehexagon"><img src="https://sourcerer.io/assets/avatar/wildlifehexagon" height="80px" alt="Sourcerer"></a>
