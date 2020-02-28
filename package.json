@@ -4,10 +4,6 @@
   "author": "wildlifehexagon",
   "module": "dist/dicty-hooks.esm.js",
   "license": "BSD-2-Clause",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/dictyBase/dicty-hooks.git"
-  },
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
