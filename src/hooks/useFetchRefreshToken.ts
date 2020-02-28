@@ -9,7 +9,7 @@ import { useEffect } from "react"
  * More info: https://hasura.io/blog/best-practices-of-using-jwt-with-graphql/#silent_refresh
  */
 
-const useRefreshToken = (
+const useFetchRefreshToken = (
   callback: Function,
   intervalRef: React.MutableRefObject<any>,
   delay: number,
@@ -32,4 +32,4 @@ const useRefreshToken = (
   }, [callback, intervalRef, delay, isAuthenticated])
 }
 
-export default useRefreshToken
+export default useFetchRefreshToken
