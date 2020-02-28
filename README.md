@@ -57,6 +57,7 @@ Examples of how to use each hook are provided individually.
 - Add custom hook to `/src/hooks`
 - Add unit tests to `/test`
 - Add export to `/src/index.ts`
+- Add documentation to `/docs`
 - Commit all changes and open a pull request. If all checks pass, it is ready
   to merge to `develop`.
 
