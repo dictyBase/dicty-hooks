@@ -14,8 +14,8 @@ jobs:
       - name: check out code
         uses: actions/checkout@v1
       - name: install
-        run: npm i semantic-release@17.0.4
+        run: npm ci
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npm run semantic-release
+        run: npx semantic-release
