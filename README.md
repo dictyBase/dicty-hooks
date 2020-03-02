@@ -47,7 +47,7 @@ Examples of how to use each hook are provided individually.
 
 - [useFetchRefreshToken](./docs/useFetchRefreshToken.md)
 - [useFooter](./docs/useFooter.md)
-- [useNavbar](./docs/useFetchRefreshToken.md)
+- [useNavbar](./docs/useNavbar.md)
 
 ## Development
 
