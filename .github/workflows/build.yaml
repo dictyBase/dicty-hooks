@@ -1,4 +1,4 @@
-name: Testing
+name: Build
 on:
   push:
     branches:
@@ -28,12 +28,5 @@ jobs:
             ${{ runner.os }}-node-
       - name: npm install
         run: npm ci
-      - name: npm test
-        run: |
-          npm run test-coverage
-        env:
-          CI: true
-      - name: upload coverage to codecov
-        uses: codecov/codecov-action@v1.0.2
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: npm build
+        run: npm run build
