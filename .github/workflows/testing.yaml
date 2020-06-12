@@ -8,12 +8,12 @@ on:
       - develop
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: set up node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 10.x
+          node-version: 12.x
       - name: check out code
         uses: actions/checkout@v1
       - name: cache npm dependencies
