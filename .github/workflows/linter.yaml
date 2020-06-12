@@ -10,5 +10,7 @@ jobs:
           node-version: 12.x
       - name: check out code
         uses: actions/checkout@v1
+      - name: install deps
+        run: npm install
       - name: eslint
         run: npm run lint
