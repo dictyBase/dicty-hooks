@@ -2,15 +2,13 @@ name: ESLint
 on: pull_request
 jobs:
   eslint:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: set up node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 10.x
+          node-version: 12.x
       - name: check out code
         uses: actions/checkout@v1
       - name: eslint
-        uses: reviewdog/action-eslint@v1
-        with:
-          github_token: ${{ secrets.github_token }}
+        run: npm run lint
