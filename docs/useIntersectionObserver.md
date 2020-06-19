@@ -11,7 +11,7 @@ import React from "react"
 import { useIntersectionObserver } from "dicty-hooks"
 
 const Demo = () => {
-  const targetRef = React.useRef < HTMLDivElement > null
+  const targetRef = React.useRef(null)
   const visible = useIntersectionObserver({
     ref: targetRef,
     hasMore,
