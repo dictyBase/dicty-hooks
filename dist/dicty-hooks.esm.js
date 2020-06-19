@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // A type of promise-like that resolves synchronously and supports only one observer
 
@@ -453,5 +453,37 @@ var useFetchRefreshToken = function useFetchRefreshToken(callback, intervalRef, 
   }, [callback, intervalRef, delay, isAuthenticated]);
 };
 
-export { useFetchRefreshToken, useFooter, useNavbar };
+var useIntersectionObserver = function useIntersectionObserver(_ref) {
+  var ref = _ref.ref,
+      _ref$rootMargin = _ref.rootMargin,
+      rootMargin = _ref$rootMargin === void 0 ? "0px" : _ref$rootMargin,
+      _ref$threshold = _ref.threshold,
+      threshold = _ref$threshold === void 0 ? 0.25 : _ref$threshold,
+      hasMore = _ref.hasMore;
+
+  var _React$useState = React.useState(false),
+      intersecting = _React$useState[0],
+      setIntersecting = _React$useState[1];
+
+  React.useEffect(function () {
+    var callback = function callback(entries) {
+      if (hasMore) {
+        setIntersecting(entries[0].isIntersecting);
+      }
+    };
+
+    var observer = new IntersectionObserver(callback, {
+      rootMargin: rootMargin,
+      threshold: threshold
+    });
+    var target = ref.current;
+    observer.observe(target);
+    return function () {
+      return observer.unobserve(target);
+    };
+  }, [hasMore, intersecting, ref, rootMargin, threshold]);
+  return intersecting;
+};
+
+export { useFetchRefreshToken, useFooter, useIntersectionObserver, useNavbar };
 //# sourceMappingURL=dicty-hooks.esm.js.map
