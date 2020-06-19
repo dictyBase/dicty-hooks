@@ -2,7 +2,10 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var react = require('react');
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var React = require('react');
+var React__default = _interopDefault(React);
 
 // A type of promise-like that resolves synchronously and supports only one observer
 
@@ -197,15 +200,15 @@ var formatFooterData = function formatFooterData(json) {
 
 
 var useFooter = function useFooter() {
-  var _useState = react.useState(footerItems),
+  var _useState = React.useState(footerItems),
       footerData = _useState[0],
       setFooterData = _useState[1];
 
-  var _useState2 = react.useState(null),
+  var _useState2 = React.useState(null),
       error = _useState2[0],
       setError = _useState2[1];
 
-  react.useEffect(function () {
+  React.useEffect(function () {
     var fetchFooter = function fetchFooter() {
       try {
         var _temp2 = _catch(function () {
@@ -391,15 +394,15 @@ var formatNavbarData = function formatNavbarData(json) {
 
 
 var useNavbar = function useNavbar() {
-  var _useState = react.useState(navbarItems),
+  var _useState = React.useState(navbarItems),
       navbarData = _useState[0],
       setNavbarData = _useState[1];
 
-  var _useState2 = react.useState(null),
+  var _useState2 = React.useState(null),
       error = _useState2[0],
       setError = _useState2[1];
 
-  react.useEffect(function () {
+  React.useEffect(function () {
     var fetchNavbar = function fetchNavbar() {
       try {
         var _temp2 = _catch(function () {
@@ -440,10 +443,10 @@ var useNavbar = function useNavbar() {
  */
 
 var useFetchRefreshToken = function useFetchRefreshToken(callback, intervalRef, delay, isAuthenticated) {
-  react.useEffect(function () {
+  React.useEffect(function () {
     callback();
   }, [callback]);
-  react.useEffect(function () {
+  React.useEffect(function () {
     if (!isAuthenticated) {
       return;
     }
@@ -457,7 +460,40 @@ var useFetchRefreshToken = function useFetchRefreshToken(callback, intervalRef, 
   }, [callback, intervalRef, delay, isAuthenticated]);
 };
 
+var useIntersectionObserver = function useIntersectionObserver(_ref) {
+  var ref = _ref.ref,
+      _ref$rootMargin = _ref.rootMargin,
+      rootMargin = _ref$rootMargin === void 0 ? "0px" : _ref$rootMargin,
+      _ref$threshold = _ref.threshold,
+      threshold = _ref$threshold === void 0 ? 0.25 : _ref$threshold,
+      hasMore = _ref.hasMore;
+
+  var _React$useState = React__default.useState(false),
+      intersecting = _React$useState[0],
+      setIntersecting = _React$useState[1];
+
+  React__default.useEffect(function () {
+    var callback = function callback(entries) {
+      if (hasMore) {
+        setIntersecting(entries[0].isIntersecting);
+      }
+    };
+
+    var observer = new IntersectionObserver(callback, {
+      rootMargin: rootMargin,
+      threshold: threshold
+    });
+    var target = ref.current;
+    observer.observe(target);
+    return function () {
+      return observer.unobserve(target);
+    };
+  }, [hasMore, intersecting, ref, rootMargin, threshold]);
+  return intersecting;
+};
+
 exports.useFetchRefreshToken = useFetchRefreshToken;
 exports.useFooter = useFooter;
+exports.useIntersectionObserver = useIntersectionObserver;
 exports.useNavbar = useNavbar;
 //# sourceMappingURL=dicty-hooks.cjs.development.js.map
