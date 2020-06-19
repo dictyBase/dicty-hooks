@@ -32,13 +32,13 @@ This is a React library of hooks that can be reused throughout any dictyBase web
 ## Install
 
 ```bash
-npm install dictyBase/dicty-hooks
+yarn install dictyBase/dicty-hooks
 ```
 
 To install a specific version, add a tag to the end:
 
 ```bash
-npm install dictyBase/dicty-hooks#1.0.0
+yarn install dictyBase/dicty-hooks#1.0.0
 ```
 
 ## Usage
@@ -46,19 +46,21 @@ npm install dictyBase/dicty-hooks#1.0.0
 Examples of how to use each hook are provided individually.
 
 - [useFetchRefreshToken](./docs/useFetchRefreshToken.md)
+- [useIntersectionObserver](./docs/useIntersectionObserver.md)
+- [useVirtualList](./docs/useVirtualList.md)
 - [useFooter](./docs/useFooter.md)
 - [useNavbar](./docs/useNavbar.md)
 
 ## Development
 
 - Clone the `develop` branch of this repository
-- Run `npm install`
+- Run `yarn install`
 - Create a new branch (i.e. `feature/useFoo`)
 - Add custom hook to `/src/hooks`
 - Add unit tests to `/test`
 - Add export to `/src/index.ts`
 - Add documentation to `/docs`
-- Generate new build `npm run build`
+- Generate new build `yarn build`
 - Commit all changes and open a pull request. If all checks pass, it is ready
   to merge to `develop`.
 
