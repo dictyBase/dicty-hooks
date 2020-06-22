@@ -11,6 +11,8 @@ type ConfigParams = {
   rowHeight: number
   /** Number of items in total */
   numItems: number
+  /** Number of elements to render above and below viewport */
+  overscan?: number
 }
 
 const useVirtualList = ({
@@ -18,6 +20,7 @@ const useVirtualList = ({
   viewportHeight,
   rowHeight,
   numItems,
+  overscan,
 }: ConfigParams) => {
   /**
    * scrollTop measures how far the inner container is scrolled.
@@ -26,11 +29,16 @@ const useVirtualList = ({
    */
   const [scrollTop, setScrollTop] = React.useState(0)
 
-  const startIndex = Math.floor(scrollTop / rowHeight)
-  const endIndex = Math.min(
+  let startIndex = Math.floor(scrollTop / rowHeight)
+  let endIndex = Math.min(
     numItems - 1, // don't render past the end of the list
     Math.floor((scrollTop + viewportHeight) / rowHeight),
   )
+
+  if (overscan) {
+    startIndex = Math.max(0, startIndex - overscan)
+    endIndex = Math.min(numItems - 1, endIndex + overscan)
+  }
 
   const items = []
   for (let i = startIndex; i <= endIndex; i++) {
