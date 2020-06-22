@@ -1,4 +1,3 @@
-/// <reference types="react" />
 /**
  * useFetchRefreshToken fires off a callback function on
  * mount, then executes the callback at a specified interval
@@ -7,5 +6,5 @@
  *
  * More info: https://hasura.io/blog/best-practices-of-using-jwt-with-graphql/#silent_refresh
  */
-declare const useFetchRefreshToken: (callback: Function, intervalRef: import("react").MutableRefObject<any>, delay: number, isAuthenticated: boolean) => void;
+declare const useFetchRefreshToken: (callback: Function, intervalRef: React.MutableRefObject<any>, delay: number, isAuthenticated: boolean) => void;
 export default useFetchRefreshToken;
