@@ -8,8 +8,10 @@ declare type ConfigParams = {
     rowHeight: number;
     /** Number of items in total */
     numItems: number;
+    /** Number of elements to render above and below viewport */
+    overscan?: number;
 };
-declare const useVirtualList: ({ ref, viewportHeight, rowHeight, numItems, }: ConfigParams) => {
+declare const useVirtualList: ({ ref, viewportHeight, rowHeight, numItems, overscan, }: ConfigParams) => {
     items: {
         index: number;
         style: {
