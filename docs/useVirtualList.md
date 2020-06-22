@@ -1,9 +1,9 @@
 # useVirtualList 📃
 
 Provides a virtual list based on the number of elements to render, how big each row is,
-and the size of the viewport. Components using this hook are expected to provide an
-outer container using a ref, and an inner container with `relative` position and `height`
-based on `data.length * rowHeight`.
+the size of the viewport and overscan amount (optional). Components using this hook
+are expected to provide an outer container using a ref, and an inner container with
+`relative` position and `height` based on `data.length * rowHeight`.
 
 ## Usage
 
