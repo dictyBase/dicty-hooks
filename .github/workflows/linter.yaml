@@ -9,8 +9,8 @@ jobs:
         with:
           node-version: 12.x
       - name: check out code
-        uses: actions/checkout@v1
-      - name: install deps
-        run: npm install
+        uses: actions/checkout@v2
+      - name: yarn install
+        run: yarn install
       - name: eslint
-        run: npm run lint
+        run: yarn lint
