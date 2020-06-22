@@ -492,8 +492,66 @@ var useIntersectionObserver = function useIntersectionObserver(_ref) {
   return intersecting;
 };
 
+var useVirtualList = function useVirtualList(_ref) {
+  var ref = _ref.ref,
+      viewportHeight = _ref.viewportHeight,
+      rowHeight = _ref.rowHeight,
+      numItems = _ref.numItems,
+      overscan = _ref.overscan;
+
+  /**
+   * scrollTop measures how far the inner container is scrolled.
+   * It is the difference between the total list height and the viewport
+   * height.
+   */
+  var _React$useState = React__default.useState(0),
+      scrollTop = _React$useState[0],
+      setScrollTop = _React$useState[1];
+
+  var startIndex = Math.floor(scrollTop / rowHeight);
+  var endIndex = Math.min(numItems - 1, // don't render past the end of the list
+  Math.floor((scrollTop + viewportHeight) / rowHeight));
+
+  if (overscan) {
+    startIndex = Math.max(0, startIndex - overscan);
+    endIndex = Math.min(numItems - 1, endIndex + overscan);
+  }
+
+  var items = [];
+
+  for (var i = startIndex; i <= endIndex; i++) {
+    items.push({
+      // index is required so we know the exact row of data to display
+      index: i,
+      style: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: rowHeight + "px",
+        transform: "translateY(" + i * rowHeight + "px)"
+      }
+    });
+  }
+
+  var handleScroll = function handleScroll(event) {
+    setScrollTop(event.currentTarget.scrollTop);
+  };
+
+  React__default.useEffect(function () {
+    if (ref && ref.current) {
+      var element = ref.current;
+      element.onscroll = handleScroll;
+    }
+  }, [ref]);
+  return {
+    items: items
+  };
+};
+
 exports.useFetchRefreshToken = useFetchRefreshToken;
 exports.useFooter = useFooter;
 exports.useIntersectionObserver = useIntersectionObserver;
 exports.useNavbar = useNavbar;
+exports.useVirtualList = useVirtualList;
 //# sourceMappingURL=dicty-hooks.cjs.development.js.map
