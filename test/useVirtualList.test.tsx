@@ -91,9 +91,7 @@ describe("useVirtualList", () => {
     const { getByTestId } = render(<VirtualList />)
     const outer = getByTestId("parent-ref")
     jest.spyOn(outer, "scrollTop", "get").mockImplementation(() => 300)
-    fireEvent.scroll(outer, {
-      currentTarget: { scrollTop: 300 },
-    })
+    fireEvent.scroll(outer)
 
     /**
      * Scrolling down 300px in this case would make the following:
