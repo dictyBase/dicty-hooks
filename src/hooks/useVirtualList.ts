@@ -65,8 +65,11 @@ const useVirtualList = ({
   React.useEffect(() => {
     if (ref && ref.current) {
       const element = ref.current
-      element.onscroll = handleScroll
+      element.addEventListener("scroll", handleScroll)
+
+      return () => element.removeEventListener("scroll", handleScroll)
     }
+    return
   }, [ref])
 
   return { items }
