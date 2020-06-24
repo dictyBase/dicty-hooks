@@ -543,8 +543,13 @@ var useVirtualList = function useVirtualList(_ref) {
   React__default.useEffect(function () {
     if (ref && ref.current) {
       var element = ref.current;
-      element.onscroll = handleScroll;
+      element.addEventListener("scroll", handleScroll);
+      return function () {
+        return element.removeEventListener("scroll", handleScroll);
+      };
     }
+
+    return;
   }, [ref]);
   return {
     items: items
