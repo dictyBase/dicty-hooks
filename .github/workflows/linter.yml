@@ -1,5 +1,11 @@
 name: ESLint
-on: pull_request
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
 jobs:
   eslint:
     runs-on: ubuntu-latest
@@ -10,7 +16,7 @@ jobs:
           node-version: 12.x
       - name: check out code
         uses: actions/checkout@v2
-      - name: yarn install
+      - name: install
         run: yarn install
       - name: eslint
         run: yarn lint
