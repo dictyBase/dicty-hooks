@@ -434,18 +434,14 @@ var useNavbar = function useNavbar() {
 };
 
 /**
- * useFetchRefreshToken fires off a callback function on
- * mount, then executes the callback at a specified interval
- * if isAuthenticated is true. This is used to silently fetch
+ * useFetchRefreshToken executes a callback function at a specified
+ * interval if isAuthenticated is true. This is used to silently fetch
  * a refresh token in the background.
  *
  * More info: https://hasura.io/blog/best-practices-of-using-jwt-with-graphql/#silent_refresh
  */
 
 var useFetchRefreshToken = function useFetchRefreshToken(callback, intervalRef, delay, isAuthenticated) {
-  React.useEffect(function () {
-    callback();
-  }, [callback]);
   React.useEffect(function () {
     if (!isAuthenticated) {
       return;

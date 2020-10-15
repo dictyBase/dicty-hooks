@@ -31,13 +31,13 @@ This is a React library of hooks that can be reused throughout any dictyBase web
 ## Install
 
 ```bash
-yarn install dictyBase/dicty-hooks
+yarn add dictyBase/dicty-hooks
 ```
 
 To install a specific version, add a tag to the end:
 
 ```bash
-yarn install dictyBase/dicty-hooks#1.0.0
+yarn add dictyBase/dicty-hooks#1.0.0
 ```
 
 ## Usage
