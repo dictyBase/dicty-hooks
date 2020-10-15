@@ -35,35 +35,30 @@ describe("useFetchRefreshToken", () => {
     expect(clearInterval).toHaveBeenCalledTimes(1)
     expect(jest.getTimerCount()).toBe(initialTimerCount - 1)
   })
-  it("should call provided callback on mount", () => {
-    renderHook(() => useFetchRefreshToken(callback, ref, 100, true))
-    expect(callback).toHaveBeenCalledTimes(1)
-  })
 
   it("should return early if unauthenticated", () => {
     renderHook(() => useFetchRefreshToken(callback, ref, 0, false))
     // callback only called once, second useEffect returns early
-    expect(callback).toHaveBeenCalledTimes(1)
+    expect(callback).not.toHaveBeenCalled()
   })
 
   it("should call provided callback with given time delay between each call", () => {
     renderHook(() => useFetchRefreshToken(callback, ref, 200, true))
-    expect(callback).toHaveBeenCalledTimes(1)
 
     // fast-forward until 1s before it should be executed again
     jest.advanceTimersByTime(199)
-    expect(callback).toHaveBeenCalledTimes(1)
+    expect(callback).not.toHaveBeenCalled()
 
     // fast-forward until 1st call should be executed
     jest.advanceTimersByTime(1)
-    expect(callback).toHaveBeenCalledTimes(2)
+    expect(callback).toHaveBeenCalledTimes(1)
 
     // fast-forward until next timer should be executed
     jest.advanceTimersToNextTimer()
-    expect(callback).toHaveBeenCalledTimes(3)
+    expect(callback).toHaveBeenCalledTimes(2)
 
     // fast-forward until 3 more timers should be executed
     jest.advanceTimersToNextTimer(3)
-    expect(callback).toHaveBeenCalledTimes(6)
+    expect(callback).toHaveBeenCalledTimes(5)
   })
 })
