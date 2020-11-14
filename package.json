@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@semantic-release/git": "^9.0.0",
-    "@testing-library/react": "^11.0.4",
+    "@testing-library/react": "^11.1.2",
     "@testing-library/react-hooks": "^3.4.1",
     "@types/jest": "^26.0.15",
     "@types/react": "^16.9.55",
