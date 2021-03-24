@@ -15,7 +15,7 @@
     "test": "tsdx test --passWithNoTests",
     "test-coverage": "tsdx test --passWithNoTests --coverage",
     "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "prepare": "husky install",
     "semantic-release": "semantic-release"
   },
   "peerDependencies": {
@@ -28,7 +28,7 @@
     "@types/jest": "^26.0.21",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.2",
-    "husky": "^4.3.8",
+    "husky": "5",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-test-renderer": "^17.0.1",
@@ -36,11 +36,6 @@
     "tsdx": "^0.14.1",
     "tslib": "^2.1.0",
     "typescript": "^4.2.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint && tsdx build"
-    }
   },
   "jest": {
     "collectCoverageFrom": [
