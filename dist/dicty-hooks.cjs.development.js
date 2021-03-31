@@ -1276,8 +1276,7 @@ var useFetchRefreshToken = function useFetchRefreshToken(callback, intervalRef, 
 };
 
 var useIntersectionObserver = function useIntersectionObserver(_ref) {
-  var ref = _ref.ref,
-      _ref$rootMargin = _ref.rootMargin,
+  var _ref$rootMargin = _ref.rootMargin,
       rootMargin = _ref$rootMargin === void 0 ? "0px" : _ref$rootMargin,
       _ref$threshold = _ref.threshold,
       threshold = _ref$threshold === void 0 ? 0.25 : _ref$threshold,
@@ -1287,24 +1286,50 @@ var useIntersectionObserver = function useIntersectionObserver(_ref) {
       intersecting = _React$useState[0],
       setIntersecting = _React$useState[1];
 
-  React__default.useEffect(function () {
-    var callback = function callback(entries) {
-      if (hasMore) {
-        setIntersecting(entries[0].isIntersecting);
-      }
-    };
+  var _React$useState2 = React__default.useState(null),
+      targetRef = _React$useState2[0],
+      setTargetRef = _React$useState2[1];
 
-    var observer = new IntersectionObserver(callback, {
+  var observerRef = React__default.useRef(null); // set up callback fn that updates intersecting state if there is
+  // more data to fetch
+
+  var observerCallback = React__default.useCallback(function (_ref2) {
+    var entry = _ref2[0];
+
+    if (hasMore) {
+      setIntersecting(entry.isIntersecting);
+    }
+  }, [hasMore]); // callback fn that adds intersection observer to observer ref
+  // and observes the target ref if it exists
+  // https://medium.com/@teh_builder/ref-objects-inside-useeffect-hooks-eb7c15198780#
+
+  var observe = React__default.useCallback(function () {
+    observerRef.current = new IntersectionObserver(observerCallback, {
       rootMargin: rootMargin,
       threshold: threshold
     });
-    var target = ref.current;
-    observer.observe(target);
+
+    if (targetRef) {
+      observerRef.current.observe(targetRef);
+    }
+  }, [observerCallback, rootMargin, targetRef, threshold]); // standard callback fn to disconnect from observer
+
+  var disconnect = React__default.useCallback(function () {
+    if (observerRef && observerRef.current) {
+      observerRef.current.disconnect();
+    }
+  }, []); // set up the intersection observer
+
+  React__default.useEffect(function () {
+    observe();
     return function () {
-      return observer.unobserve(target);
+      disconnect();
     };
-  }, [hasMore, intersecting, ref, rootMargin, threshold]);
-  return intersecting;
+  }, [observe, disconnect]);
+  return {
+    intersecting: intersecting,
+    ref: setTargetRef
+  };
 };
 
 var useVirtualList = function useVirtualList(_ref) {
