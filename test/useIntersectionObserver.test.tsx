@@ -1,4 +1,6 @@
+import React from "react"
 import { renderHook } from "@testing-library/react-hooks"
+import { render } from "@testing-library/react"
 import useIntersectionObserver from "../src/hooks/useIntersectionObserver"
 
 describe("useIntersectionObserver", () => {
@@ -60,6 +62,30 @@ describe("useIntersectionObserver", () => {
         useIntersectionObserver({ hasMore: false }),
       )
       expect(result.current.intersecting).toBeFalsy()
+    })
+  })
+
+  describe("target ref", () => {
+    const MockComponent = () => {
+      const { intersecting, ref } = useIntersectionObserver({
+        rootMargin: "1px",
+        threshold: 0.25,
+        hasMore: true,
+      })
+
+      return <div ref={ref}>{intersecting.toString()}</div>
+    }
+
+    it("should call observe method when target ref exists", () => {
+      window.IntersectionObserver = jest.fn(callback => {
+        callback([{ isIntersecting: false }])
+        return {
+          observe: mockObserve,
+          disconnect: mockDisconnect,
+        }
+      })
+      render(<MockComponent />)
+      expect(mockObserve).toHaveBeenCalledTimes(1)
     })
   })
 })
