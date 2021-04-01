@@ -12,16 +12,13 @@ import { useIntersectionObserver } from "dicty-hooks"
 
 const Demo = () => {
   const targetRef = React.useRef(null)
-  const visible = useIntersectionObserver({
-    ref: targetRef,
-    hasMore,
-  })
+  const { intersecting, ref } = useIntersectionObserver()
 
   React.useEffect(() => {
-    if (visible && hasMore) {
+    if (intersecting && hasMore) {
       loadMore()
     }
-  }, [hasMore, loadMore, visible])
+  }, [hasMore, loadMore, intersecting])
 
   return (
     <List>
@@ -29,7 +26,7 @@ const Demo = () => {
         <ListItem>{item}</ListItem>
       ))}
       {isLoadingMore && <ListItem>Fetching more list items...</ListItem>}
-      <div ref={targetRef} />
+      <div ref={ref} />
     </List>
   )
 }
