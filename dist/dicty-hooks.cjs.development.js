@@ -1275,13 +1275,14 @@ var useFetchRefreshToken = function useFetchRefreshToken(callback, intervalRef, 
   }, [callback, intervalRef, delay, isAuthenticated]);
 };
 
-var useIntersectionObserver = function useIntersectionObserver(_ref) {
-  var _ref$rootMargin = _ref.rootMargin,
+var useIntersectionObserver = function useIntersectionObserver(_temp) {
+  var _ref = _temp === void 0 ? {} : _temp,
+      _ref$root = _ref.root,
+      root = _ref$root === void 0 ? null : _ref$root,
+      _ref$rootMargin = _ref.rootMargin,
       rootMargin = _ref$rootMargin === void 0 ? "0px" : _ref$rootMargin,
       _ref$threshold = _ref.threshold,
-      threshold = _ref$threshold === void 0 ? 0.25 : _ref$threshold,
-      _ref$hasMore = _ref.hasMore,
-      hasMore = _ref$hasMore === void 0 ? true : _ref$hasMore;
+      threshold = _ref$threshold === void 0 ? 0.25 : _ref$threshold;
 
   var _React$useState = React__default.useState(false),
       intersecting = _React$useState[0],
@@ -1291,21 +1292,19 @@ var useIntersectionObserver = function useIntersectionObserver(_ref) {
       targetRef = _React$useState2[0],
       setTargetRef = _React$useState2[1];
 
-  var observerRef = React__default.useRef(null); // set up callback fn that updates intersecting state if there is
-  // more data to fetch
+  var observerRef = React__default.useRef(null); // set up callback fn that updates intersecting state
 
   var observerCallback = React__default.useCallback(function (_ref2) {
     var entry = _ref2[0];
-
-    if (hasMore) {
-      setIntersecting(entry.isIntersecting);
-    }
-  }, [hasMore]); // callback fn that adds intersection observer to observer ref
+    setIntersecting(entry.isIntersecting);
+  }, []); // callback fn that adds intersection observer to observer ref
   // and observes the target ref if it exists
   // https://medium.com/@teh_builder/ref-objects-inside-useeffect-hooks-eb7c15198780#
 
   var observe = React__default.useCallback(function () {
+    // preserve the intersection observer by storing the mutable value in the '.current' property
     observerRef.current = new IntersectionObserver(observerCallback, {
+      root: root,
       rootMargin: rootMargin,
       threshold: threshold
     });
@@ -1313,20 +1312,14 @@ var useIntersectionObserver = function useIntersectionObserver(_ref) {
     if (targetRef) {
       observerRef.current.observe(targetRef);
     }
-  }, [observerCallback, rootMargin, targetRef, threshold]); // standard callback fn to disconnect from observer
-
-  var disconnect = React__default.useCallback(function () {
-    if (observerRef && observerRef.current) {
-      observerRef.current.disconnect();
-    }
-  }, []); // set up the intersection observer
+  }, [observerCallback, root, rootMargin, targetRef, threshold]); // set up the intersection observer
 
   React__default.useEffect(function () {
     observe();
     return function () {
-      disconnect();
+      return observerRef.current.disconnect();
     };
-  }, [observe, disconnect]);
+  }, [observe]);
   return {
     intersecting: intersecting,
     ref: setTargetRef

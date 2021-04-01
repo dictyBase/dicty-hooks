@@ -3,13 +3,13 @@ import React from "react"
 // https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
 
 type ConfigParams = {
-  /** Margin around the root */
+  /** Element used as viewport for checking visibility of target */
+  root?: Element | null
+  /** Margin around the root (i.e. "20px") */
   rootMargin?: string
   /** Indicates the percentage of the target's visibility the observer's
-   * callback should be executed */
+   * callback should be executed (number between 0 and 1) */
   threshold?: number
-  /** Indicates whether there are more items to fetch */
-  hasMore?: boolean
 }
 
 type UseIntersectionObserverResponse = {
@@ -20,30 +20,29 @@ type UseIntersectionObserverResponse = {
 }
 
 const useIntersectionObserver = ({
+  root = null,
   rootMargin = "0px",
   threshold = 0.25,
-  hasMore = true,
-}: ConfigParams) => {
+}: ConfigParams = {}) => {
   const [intersecting, setIntersecting] = React.useState(false)
   const [targetRef, setTargetRef] = React.useState(null)
   const observerRef = React.useRef<any>(null)
 
-  // set up callback fn that updates intersecting state if there is
-  // more data to fetch
+  // set up callback fn that updates intersecting state
   const observerCallback = React.useCallback(
     ([entry]: IntersectionObserverEntry[]) => {
-      if (hasMore) {
-        setIntersecting(entry.isIntersecting)
-      }
+      setIntersecting(entry.isIntersecting)
     },
-    [hasMore],
+    [],
   )
 
   // callback fn that adds intersection observer to observer ref
   // and observes the target ref if it exists
   // https://medium.com/@teh_builder/ref-objects-inside-useeffect-hooks-eb7c15198780#
   const observe = React.useCallback(() => {
+    // preserve the intersection observer by storing the mutable value in the '.current' property
     observerRef.current = new IntersectionObserver(observerCallback, {
+      root,
       rootMargin,
       threshold,
     })
@@ -51,23 +50,14 @@ const useIntersectionObserver = ({
     if (targetRef) {
       observerRef.current.observe(targetRef)
     }
-  }, [observerCallback, rootMargin, targetRef, threshold])
-
-  // standard callback fn to disconnect from observer
-  const disconnect = React.useCallback(() => {
-    if (observerRef && observerRef.current) {
-      observerRef.current.disconnect()
-    }
-  }, [])
+  }, [observerCallback, root, rootMargin, targetRef, threshold])
 
   // set up the intersection observer
   React.useEffect(() => {
     observe()
 
-    return () => {
-      disconnect()
-    }
-  }, [observe, disconnect])
+    return () => observerRef.current.disconnect()
+  }, [observe])
 
   return { intersecting, ref: setTargetRef } as UseIntersectionObserverResponse
 }
