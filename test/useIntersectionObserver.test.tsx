@@ -23,10 +23,8 @@ describe("useIntersectionObserver", () => {
       jest.clearAllMocks()
     })
 
-    it("should call unobserve method only on unmount", () => {
-      const { unmount } = renderHook(() =>
-        useIntersectionObserver({ hasMore: true }),
-      )
+    it("should call disconnect method only on unmount", () => {
+      const { unmount } = renderHook(() => useIntersectionObserver())
       expect(mockDisconnect).toHaveBeenCalledTimes(0)
       unmount()
       expect(mockDisconnect).toHaveBeenCalledTimes(1)
@@ -34,7 +32,7 @@ describe("useIntersectionObserver", () => {
   })
 
   describe("isIntersecting", () => {
-    it("should return true if intersecting and more to fetch", () => {
+    it("should return true if intersecting value is true", () => {
       window.IntersectionObserver = jest.fn(callback => {
         callback([{ isIntersecting: true }])
         return {
@@ -42,15 +40,11 @@ describe("useIntersectionObserver", () => {
           disconnect: mockDisconnect,
         }
       })
-      const { result } = renderHook(() =>
-        useIntersectionObserver({
-          hasMore: true,
-        }),
-      )
+      const { result } = renderHook(() => useIntersectionObserver())
       expect(result.current.intersecting).toBeTruthy()
     })
 
-    it("should return false if not intersecting and nothing left to fetch", () => {
+    it("should return false if not intersecting", () => {
       window.IntersectionObserver = jest.fn(callback => {
         callback([{ isIntersecting: false }])
         return {
@@ -58,9 +52,7 @@ describe("useIntersectionObserver", () => {
           disconnect: mockDisconnect,
         }
       })
-      const { result } = renderHook(() =>
-        useIntersectionObserver({ hasMore: false }),
-      )
+      const { result } = renderHook(() => useIntersectionObserver())
       expect(result.current.intersecting).toBeFalsy()
     })
   })
@@ -68,9 +60,9 @@ describe("useIntersectionObserver", () => {
   describe("target ref", () => {
     const MockComponent = () => {
       const { intersecting, ref } = useIntersectionObserver({
+        root: null,
         rootMargin: "1px",
         threshold: 0.25,
-        hasMore: true,
       })
 
       return <div ref={ref}>{intersecting.toString()}</div>
