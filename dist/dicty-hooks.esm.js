@@ -1273,7 +1273,8 @@ var useIntersectionObserver = function useIntersectionObserver(_ref) {
       rootMargin = _ref$rootMargin === void 0 ? "0px" : _ref$rootMargin,
       _ref$threshold = _ref.threshold,
       threshold = _ref$threshold === void 0 ? 0.25 : _ref$threshold,
-      hasMore = _ref.hasMore;
+      _ref$hasMore = _ref.hasMore,
+      hasMore = _ref$hasMore === void 0 ? true : _ref$hasMore;
 
   var _React$useState = React.useState(false),
       intersecting = _React$useState[0],

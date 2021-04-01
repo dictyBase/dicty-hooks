@@ -9,7 +9,7 @@ type ConfigParams = {
    * callback should be executed */
   threshold?: number
   /** Indicates whether there are more items to fetch */
-  hasMore: boolean
+  hasMore?: boolean
 }
 
 type UseIntersectionObserverResponse = {
@@ -22,7 +22,7 @@ type UseIntersectionObserverResponse = {
 const useIntersectionObserver = ({
   rootMargin = "0px",
   threshold = 0.25,
-  hasMore,
+  hasMore = true,
 }: ConfigParams) => {
   const [intersecting, setIntersecting] = React.useState(false)
   const [targetRef, setTargetRef] = React.useState(null)
