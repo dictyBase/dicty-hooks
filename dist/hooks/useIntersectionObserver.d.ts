@@ -5,7 +5,7 @@ declare type ConfigParams = {
      * callback should be executed */
     threshold?: number;
     /** Indicates whether there are more items to fetch */
-    hasMore: boolean;
+    hasMore?: boolean;
 };
 declare type UseIntersectionObserverResponse = {
     /** Target ref to observe */
