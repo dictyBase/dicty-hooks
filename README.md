@@ -37,6 +37,7 @@ Examples of how to use each hook are provided individually.
 - [useVirtualList](./docs/useVirtualList.md)
 - [useFooter](./docs/useFooter.md)
 - [useNavbar](./docs/useNavbar.md)
+- [useFetch](./docs/useFetch.md)
 
 ## Development
 
