@@ -1390,6 +1390,84 @@ var useVirtualList = function useVirtualList(_ref) {
   };
 };
 
+/**
+ * useFetch is a hook for fetching JSON data.
+ */
+
+var useFetch = function useFetch(url, initialData) {
+  if (initialData === void 0) {
+    initialData = {};
+  }
+
+  var _React$useState = React__default.useState(initialData),
+      data = _React$useState[0],
+      setData = _React$useState[1];
+
+  var _React$useState2 = React__default.useState(false),
+      error = _React$useState2[0],
+      setError = _React$useState2[1];
+
+  React__default.useEffect(function () {
+    var didCancel = false;
+
+    var fetchData = /*#__PURE__*/function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee() {
+        var res, json;
+        return runtime_1.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.prev = 0;
+                _context.next = 3;
+                return fetch(url);
+
+              case 3:
+                res = _context.sent;
+                _context.next = 6;
+                return res.json();
+
+              case 6:
+                json = _context.sent;
+
+                if (!didCancel) {
+                  setData(json);
+                }
+
+                _context.next = 13;
+                break;
+
+              case 10:
+                _context.prev = 10;
+                _context.t0 = _context["catch"](0);
+                setError(true);
+
+              case 13:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, null, [[0, 10]]);
+      }));
+
+      return function fetchData() {
+        return _ref.apply(this, arguments);
+      };
+    }();
+
+    fetchData(); // prevent unnecessary refetching
+    // https://www.robinwieruch.de/react-hooks-fetch-data
+
+    return function () {
+      didCancel = true;
+    };
+  }, [url]);
+  return {
+    data: data,
+    error: error
+  };
+};
+
+exports.useFetch = useFetch;
 exports.useFetchRefreshToken = useFetchRefreshToken;
 exports.useFooter = useFooter;
 exports.useIntersectionObserver = useIntersectionObserver;
