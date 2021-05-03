@@ -110,6 +110,8 @@ const mockFooterData = {
   ],
 }
 
+const mockURL = "https://testapi.dictybase.dev"
+
 describe("useFetch", () => {
   beforeEach(() => {
     globalAny.fetch = jest.fn().mockImplementation(
@@ -125,19 +127,10 @@ describe("useFetch", () => {
     )
   })
   afterEach(() => cleanup)
-  it("renders with expected initial values when first fetching", () => {
-    const {
-      result: { current },
-    } = renderHook(() =>
-      useFetch("https://testapi.dictybase.dev", mockInitialData),
-    )
-    expect(current.data).toEqual(mockInitialData)
-    expect(current.error).toEqual(false)
-  })
 
   it("resolves the promise correctly", async () => {
     const { result, waitForNextUpdate } = renderHook(() =>
-      useFetch("https://testapi.dictybase.dev", mockInitialData),
+      useFetch(mockURL, mockInitialData),
     )
     await act(() => waitForNextUpdate())
     expect(result.current.error).toEqual(false)
@@ -151,7 +144,7 @@ describe("useFetch", () => {
       }),
     )
     const { result, waitForNextUpdate } = renderHook(() =>
-      useFetch("https://testapi.dictybase.dev", mockInitialData),
+      useFetch(mockURL, mockInitialData),
     )
     await act(() => waitForNextUpdate())
     expect(result.current.error).toEqual(true)
