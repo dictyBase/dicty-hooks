@@ -128,7 +128,7 @@ describe("useFetch", () => {
   })
   afterEach(() => cleanup)
 
-  it("resolves the promise correctly", async () => {
+  it("returns expected data", async () => {
     const { result, waitForNextUpdate } = renderHook(() =>
       useFetch(mockURL, mockInitialData),
     )
@@ -137,7 +137,7 @@ describe("useFetch", () => {
     expect(result.current.data).toEqual(mockFooterData)
   })
 
-  it("rejects the promise correctly", async () => {
+  it("returns expected error boolean", async () => {
     globalAny.fetch = jest.fn().mockImplementation(() =>
       Promise.reject({
         error: "this is a test error",
@@ -149,5 +149,21 @@ describe("useFetch", () => {
     await act(() => waitForNextUpdate())
     expect(result.current.error).toEqual(true)
     expect(result.current.data).toEqual(mockInitialData)
+  })
+
+  it("does not set data if unmounted", async () => {
+    const { result, unmount } = renderHook(() =>
+      useFetch(mockURL, mockInitialData),
+    )
+    expect(result.current.error).toEqual(false)
+    unmount()
+    expect(result.current.data).toEqual(mockInitialData)
+  })
+
+  it("returns expected data without initial data", async () => {
+    const { result, waitForNextUpdate } = renderHook(() => useFetch(mockURL))
+    await act(() => waitForNextUpdate())
+    expect(result.current.error).toEqual(false)
+    expect(result.current.data).toEqual(mockFooterData)
   })
 })
