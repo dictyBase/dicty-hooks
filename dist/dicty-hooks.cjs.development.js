@@ -7,6 +7,144 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var React = require('react');
 var React__default = _interopDefault(React);
 
+/**
+ * useFetchRefreshToken executes a callback function at a specified
+ * interval if isAuthenticated is true. This is used to silently fetch
+ * a refresh token in the background.
+ *
+ * More info: https://hasura.io/blog/best-practices-of-using-jwt-with-graphql/#silent_refresh
+ */
+
+var useFetchRefreshToken = function useFetchRefreshToken(callback, intervalRef, delay, isAuthenticated) {
+  React.useEffect(function () {
+    if (!isAuthenticated) {
+      return;
+    }
+
+    intervalRef.current = setInterval(function () {
+      callback();
+    }, delay);
+    return function () {
+      return clearInterval(intervalRef.current);
+    };
+  }, [callback, intervalRef, delay, isAuthenticated]);
+};
+
+var useIntersectionObserver = function useIntersectionObserver(_temp) {
+  var _ref = _temp === void 0 ? {} : _temp,
+      _ref$root = _ref.root,
+      root = _ref$root === void 0 ? null : _ref$root,
+      _ref$rootMargin = _ref.rootMargin,
+      rootMargin = _ref$rootMargin === void 0 ? "0px" : _ref$rootMargin,
+      _ref$threshold = _ref.threshold,
+      threshold = _ref$threshold === void 0 ? 0.25 : _ref$threshold;
+
+  var _React$useState = React__default.useState(false),
+      intersecting = _React$useState[0],
+      setIntersecting = _React$useState[1];
+
+  var _React$useState2 = React__default.useState(null),
+      targetRef = _React$useState2[0],
+      setTargetRef = _React$useState2[1];
+
+  var observerRef = React__default.useRef(null); // set up callback fn that updates intersecting state
+
+  var observerCallback = React__default.useCallback(function (_ref2) {
+    var entry = _ref2[0];
+    setIntersecting(entry.isIntersecting);
+  }, []); // callback fn that adds intersection observer to observer ref
+  // and observes the target ref if it exists
+  // https://medium.com/@teh_builder/ref-objects-inside-useeffect-hooks-eb7c15198780#
+
+  var observe = React__default.useCallback(function () {
+    // preserve the intersection observer by storing the mutable value in the '.current' property
+    observerRef.current = new IntersectionObserver(observerCallback, {
+      root: root,
+      rootMargin: rootMargin,
+      threshold: threshold
+    });
+
+    if (targetRef) {
+      observerRef.current.observe(targetRef);
+    }
+  }, [observerCallback, root, rootMargin, targetRef, threshold]); // set up the intersection observer
+
+  React__default.useEffect(function () {
+    observe();
+    return function () {
+      return observerRef.current.disconnect();
+    };
+  }, [observe]);
+  return {
+    intersecting: intersecting,
+    ref: setTargetRef
+  };
+};
+
+var useVirtualList = function useVirtualList(_ref) {
+  var ref = _ref.ref,
+      viewportHeight = _ref.viewportHeight,
+      rowHeight = _ref.rowHeight,
+      numItems = _ref.numItems,
+      overscan = _ref.overscan;
+
+  /**
+   * scrollTop measures how far the inner container is scrolled.
+   * It is the difference between the total list height and the viewport
+   * height.
+   */
+  var _React$useState = React__default.useState(0),
+      scrollTop = _React$useState[0],
+      setScrollTop = _React$useState[1];
+
+  var startIndex = Math.floor(scrollTop / rowHeight);
+  var endIndex = Math.min(numItems - 1, // don't render past the end of the list
+  Math.floor((scrollTop + viewportHeight) / rowHeight));
+
+  if (overscan) {
+    // take zero or the index minus overscan, whichever is higher
+    startIndex = Math.max(0, startIndex - overscan); // if end of list, don't display the extra elements
+
+    endIndex = Math.min(numItems - 1, endIndex + overscan);
+  }
+
+  var items = [];
+
+  for (var i = startIndex; i <= endIndex; i++) {
+    items.push({
+      // index is required so we know the exact row of data to display
+      index: i,
+      style: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: rowHeight + "px",
+        transform: "translateY(" + i * rowHeight + "px)"
+      }
+    });
+  }
+
+  var handleScroll = function handleScroll(event) {
+    setScrollTop(event.currentTarget.scrollTop);
+  };
+
+  React__default.useEffect(function () {
+    if (ref && ref.current) {
+      var element = ref.current;
+      element.addEventListener("scroll", handleScroll);
+      return function () {
+        return element.removeEventListener("scroll", handleScroll);
+      };
+    }
+
+    return;
+  }, [ref]);
+  return {
+    items: items
+  };
+};
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
   try {
     var info = gen[key](arg);
@@ -797,599 +935,6 @@ try {
 }
 });
 
-var footerItems = [[{
-  header: {
-    description: "Genomes"
-  },
-  items: [{
-    link: "/",
-    description: "Dictyostelium discoideum"
-  }, {
-    link: "http://genomes.dictybase.org/purpureum",
-    description: "Dictyostelium purpureum"
-  }, {
-    link: "http://genomes.dictybase.org/fasciculatum",
-    description: "Dictyostelium fasciculatum"
-  }, {
-    link: "http://genomes.dictybase.org/pallidum",
-    description: "Polysphondylium pallium"
-  }]
-}], [{
-  header: {
-    description: "Tools"
-  },
-  items: [{
-    description: "Genome Browser",
-    link: "http://dictybase.org/tools/jbrowse/?data=data/jbrowse/discoideum&loc=6:1..50011&tracks=reference,gene,transcript"
-  }, {
-    description: "Dashboard",
-    link: "/dictyaccess"
-  }]
-}], [{
-  header: {
-    description: "Explore"
-  },
-  items: [{
-    link: "/explore/art",
-    description: "Dicty Art"
-  }, {
-    link: "/explore/gallery",
-    description: "Gallery"
-  }, {
-    link: "/explore/learn",
-    description: "Learn About Dicty"
-  }, {
-    link: "/explore/teach",
-    description: "Teaching Protocols"
-  }, {
-    link: "/explore/links",
-    description: "Useful Links"
-  }]
-}], [{
-  header: {
-    description: "Research"
-  },
-  items: [{
-    link: "/research/ontology",
-    description: "Anatomy Ontology"
-  }, {
-    link: "/research/codon",
-    description: "Codon Bias Table"
-  }, {
-    link: "/research/nomenclature",
-    description: "Nomenclature Guidelines"
-  }, {
-    link: "/research/phenotyping",
-    description: "Phenotyping"
-  }, {
-    link: "/research/techniques",
-    description: "Techniques"
-  }]
-}], [{
-  header: {
-    description: "Dicty Stock Center"
-  },
-  items: [{
-    description: "Stock Center Home",
-    link: "/stockcenter"
-  }, {
-    description: "Order Information",
-    link: "/stockcenter/information/order"
-  }, {
-    description: "FAQ",
-    link: "/stockcenter/information/faq"
-  }]
-}], [{
-  header: {
-    description: "Community"
-  },
-  items: [{
-    description: "Cite Us",
-    link: "/community/citation"
-  }, {
-    description: "Dicty Annual Conferences",
-    link: "/community/conference"
-  }, {
-    description: "Dicty Email Forum",
-    link: "/community/listserv"
-  }, {
-    description: "Dicty Labs",
-    link: "/community/labs"
-  }, {
-    description: "History",
-    link: "/community/history"
-  }, {
-    description: "Jobs",
-    link: "/community/jobs"
-  }, {
-    description: "Upcoming Meetings",
-    link: "/community/meetings"
-  }]
-}], [{
-  header: {
-    description: "Please Cite"
-  },
-  items: [{
-    description: "dictyBase",
-    link: ""
-  }, {
-    description: "Dicty Stock Center",
-    link: "/stockcenter"
-  }]
-}], [{
-  header: {
-    description: "Supported By"
-  },
-  items: [{
-    description: "NIH",
-    link: "https://www.nih.gov/"
-  }, {
-    description: "GMOD",
-    link: "http://gmod.org/wiki/Main_Page"
-  }, {
-    description: "Gene Ontology",
-    link: "http://www.geneontology.org/"
-  }]
-}]];
-
-var footerUrl = process.env.REACT_APP_FOOTER_JSON || "";
-/**
- * formatFooterItems is a helper function to convert the links
- * under each header into the accepted footer data format.
- */
-
-var formatFooterItems = function formatFooterItems(items) {
-  return items.map(function (c) {
-    return {
-      description: c.label,
-      link: c.link
-    };
-  });
-};
-/**
- * formatFooterData converts the received footer JSON data and
- * converts it into the dicty-footer data format.
- */
-
-
-var formatFooterData = function formatFooterData(json) {
-  return json.data.map(function (item) {
-    return [{
-      header: {
-        description: item.attributes.display
-      },
-      items: formatFooterItems(item.attributes.items)
-    }];
-  });
-};
-/**
- * useFooter is a hook for fetching dictyBase footer
- * JSON data. It uses an included array of data as its
- * initial state then replaces it with fetched data
- * on a successful request.
- */
-
-
-var useFooter = function useFooter() {
-  var _useState = React.useState(footerItems),
-      footerData = _useState[0],
-      setFooterData = _useState[1];
-
-  var _useState2 = React.useState(null),
-      error = _useState2[0],
-      setError = _useState2[1];
-
-  React.useEffect(function () {
-    var fetchFooter = /*#__PURE__*/function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee() {
-        var res, json, footerArr;
-        return runtime_1.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.prev = 0;
-                _context.next = 3;
-                return fetch(footerUrl);
-
-              case 3:
-                res = _context.sent;
-                _context.next = 6;
-                return res.json();
-
-              case 6:
-                json = _context.sent;
-
-                if (res.ok) {
-                  footerArr = formatFooterData(json);
-                  setFooterData(footerArr);
-                } else {
-                  setError(res.statusText);
-                }
-
-                _context.next = 13;
-                break;
-
-              case 10:
-                _context.prev = 10;
-                _context.t0 = _context["catch"](0);
-                setError(_context.t0.toString());
-
-              case 13:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, null, [[0, 10]]);
-      }));
-
-      return function fetchFooter() {
-        return _ref.apply(this, arguments);
-      };
-    }();
-
-    fetchFooter();
-  }, []);
-  return {
-    footerData: footerData,
-    error: error
-  };
-};
-
-var navbarItems = [{
-  dropdown: true,
-  title: "Genomes",
-  items: [{
-    name: "Dictyostelium discoideum",
-    href: "/"
-  }, {
-    name: "Dictyostelium purpureum",
-    href: "http://genomes.dictybase.org/purpureum"
-  }, {
-    name: "Dictyostelium fasciculatum",
-    href: "http://genomes.dictybase.org/fasciculatum"
-  }, {
-    name: "Polysphondylium pallium",
-    href: "http://genomes.dictybase.org/pallidum"
-  }]
-}, {
-  dropdown: true,
-  title: "Tools",
-  items: [{
-    name: "Genome Browser",
-    href: "http://dictybase.org/tools/jbrowse/?data=data/jbrowse/discoideum&loc=6:1..50011&tracks=reference,gene,transcript"
-  }, {
-    name: "Dashboard",
-    href: "/dictyaccess"
-  }]
-}, {
-  dropdown: true,
-  title: "Explore",
-  items: [{
-    name: "Dicty Art",
-    href: "/explore/art"
-  }, {
-    name: "Gallery",
-    href: "/explore/gallery"
-  }, {
-    name: "Learn About Dicty",
-    href: "/explore/learn"
-  }, {
-    name: "Teaching Protocols",
-    href: "/explore/teach"
-  }, {
-    name: "Useful Links",
-    href: "/explore/links"
-  }]
-}, {
-  dropdown: true,
-  title: "Research",
-  items: [{
-    name: "Anatomy Ontology",
-    href: "/research/ontology"
-  }, {
-    name: "Codon Bias Table",
-    href: "/research/codon"
-  }, {
-    name: "Nomenclature Guidelines",
-    href: "/research/nomenclature"
-  }, {
-    name: "Phenotyping",
-    href: "/research/phenotyping"
-  }, {
-    name: "Techniques",
-    href: "/research/techniques"
-  }]
-}, {
-  dropdown: true,
-  title: "Dicty Stock Center",
-  items: [{
-    name: "Stock Center Home",
-    href: "/stockcenter"
-  }, {
-    name: "Order Information",
-    href: "/stockcenter/information/order"
-  }, {
-    name: "Deposit Information",
-    href: "/stockcenter/information/deposit"
-  }, {
-    name: "Payment Information",
-    href: "/stockcenter/information/payment"
-  }, {
-    name: "FAQ",
-    href: "/stockcenter/information/faq"
-  }, {
-    name: "Strain Catalog",
-    href: "/stockcenter/strains"
-  }, {
-    name: "Plasmid Catalog",
-    href: "/stockcenter/plasmids"
-  }]
-}, {
-  dropdown: true,
-  title: "Community",
-  items: [{
-    name: "Cite Us",
-    href: "/community/citation"
-  }, {
-    name: "Dicty Annual Conferences",
-    href: "/community/conference"
-  }, {
-    name: "Dicty Email Forum",
-    href: "/community/listserv"
-  }, {
-    name: "Dicty Labs",
-    href: "/community/labs"
-  }, {
-    name: "History",
-    href: "/community/history"
-  }, {
-    name: "Jobs",
-    href: "/community/jobs"
-  }, {
-    name: "Upcoming Meetings",
-    href: "/community/meetings"
-  }]
-}];
-
-var navbarUrl = process.env.REACT_APP_NAVBAR_JSON || "";
-/**
- * formatNavbarItems is a helper function to convert the links
- * under each header into the accepted navbar data format.
- */
-
-var formatNavbarItems = function formatNavbarItems(items) {
-  return items.map(function (c) {
-    return {
-      name: c.label,
-      href: c.link
-    };
-  });
-};
-/**
- * formatNavbarData converts the received navbar JSON data and
- * converts it into the dicty-navbar data format.
- */
-
-
-var formatNavbarData = function formatNavbarData(json) {
-  return json.data.map(function (item) {
-    return {
-      dropdown: true,
-      title: item.attributes.display,
-      items: formatNavbarItems(item.attributes.items)
-    };
-  });
-};
-/**
- * useNavbar is a hook for fetching dictyBase navbar
- * JSON data. It uses an included data array as its
- * initial state then replaces it with fetched data
- * on a successful request.
- */
-
-
-var useNavbar = function useNavbar() {
-  var _useState = React.useState(navbarItems),
-      navbarData = _useState[0],
-      setNavbarData = _useState[1];
-
-  var _useState2 = React.useState(null),
-      error = _useState2[0],
-      setError = _useState2[1];
-
-  React.useEffect(function () {
-    var fetchNavbar = /*#__PURE__*/function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/runtime_1.mark(function _callee() {
-        var res, json;
-        return runtime_1.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.prev = 0;
-                _context.next = 3;
-                return fetch(navbarUrl);
-
-              case 3:
-                res = _context.sent;
-                _context.next = 6;
-                return res.json();
-
-              case 6:
-                json = _context.sent;
-
-                if (res.ok) {
-                  setNavbarData(formatNavbarData(json));
-                } else {
-                  setError(res.statusText);
-                }
-
-                _context.next = 13;
-                break;
-
-              case 10:
-                _context.prev = 10;
-                _context.t0 = _context["catch"](0);
-                setError(_context.t0.toString());
-
-              case 13:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, null, [[0, 10]]);
-      }));
-
-      return function fetchNavbar() {
-        return _ref.apply(this, arguments);
-      };
-    }();
-
-    fetchNavbar();
-  }, []);
-  return {
-    navbarData: navbarData,
-    error: error
-  };
-};
-
-/**
- * useFetchRefreshToken executes a callback function at a specified
- * interval if isAuthenticated is true. This is used to silently fetch
- * a refresh token in the background.
- *
- * More info: https://hasura.io/blog/best-practices-of-using-jwt-with-graphql/#silent_refresh
- */
-
-var useFetchRefreshToken = function useFetchRefreshToken(callback, intervalRef, delay, isAuthenticated) {
-  React.useEffect(function () {
-    if (!isAuthenticated) {
-      return;
-    }
-
-    intervalRef.current = setInterval(function () {
-      callback();
-    }, delay);
-    return function () {
-      return clearInterval(intervalRef.current);
-    };
-  }, [callback, intervalRef, delay, isAuthenticated]);
-};
-
-var useIntersectionObserver = function useIntersectionObserver(_temp) {
-  var _ref = _temp === void 0 ? {} : _temp,
-      _ref$root = _ref.root,
-      root = _ref$root === void 0 ? null : _ref$root,
-      _ref$rootMargin = _ref.rootMargin,
-      rootMargin = _ref$rootMargin === void 0 ? "0px" : _ref$rootMargin,
-      _ref$threshold = _ref.threshold,
-      threshold = _ref$threshold === void 0 ? 0.25 : _ref$threshold;
-
-  var _React$useState = React__default.useState(false),
-      intersecting = _React$useState[0],
-      setIntersecting = _React$useState[1];
-
-  var _React$useState2 = React__default.useState(null),
-      targetRef = _React$useState2[0],
-      setTargetRef = _React$useState2[1];
-
-  var observerRef = React__default.useRef(null); // set up callback fn that updates intersecting state
-
-  var observerCallback = React__default.useCallback(function (_ref2) {
-    var entry = _ref2[0];
-    setIntersecting(entry.isIntersecting);
-  }, []); // callback fn that adds intersection observer to observer ref
-  // and observes the target ref if it exists
-  // https://medium.com/@teh_builder/ref-objects-inside-useeffect-hooks-eb7c15198780#
-
-  var observe = React__default.useCallback(function () {
-    // preserve the intersection observer by storing the mutable value in the '.current' property
-    observerRef.current = new IntersectionObserver(observerCallback, {
-      root: root,
-      rootMargin: rootMargin,
-      threshold: threshold
-    });
-
-    if (targetRef) {
-      observerRef.current.observe(targetRef);
-    }
-  }, [observerCallback, root, rootMargin, targetRef, threshold]); // set up the intersection observer
-
-  React__default.useEffect(function () {
-    observe();
-    return function () {
-      return observerRef.current.disconnect();
-    };
-  }, [observe]);
-  return {
-    intersecting: intersecting,
-    ref: setTargetRef
-  };
-};
-
-var useVirtualList = function useVirtualList(_ref) {
-  var ref = _ref.ref,
-      viewportHeight = _ref.viewportHeight,
-      rowHeight = _ref.rowHeight,
-      numItems = _ref.numItems,
-      overscan = _ref.overscan;
-
-  /**
-   * scrollTop measures how far the inner container is scrolled.
-   * It is the difference between the total list height and the viewport
-   * height.
-   */
-  var _React$useState = React__default.useState(0),
-      scrollTop = _React$useState[0],
-      setScrollTop = _React$useState[1];
-
-  var startIndex = Math.floor(scrollTop / rowHeight);
-  var endIndex = Math.min(numItems - 1, // don't render past the end of the list
-  Math.floor((scrollTop + viewportHeight) / rowHeight));
-
-  if (overscan) {
-    // take zero or the index minus overscan, whichever is higher
-    startIndex = Math.max(0, startIndex - overscan); // if end of list, don't display the extra elements
-
-    endIndex = Math.min(numItems - 1, endIndex + overscan);
-  }
-
-  var items = [];
-
-  for (var i = startIndex; i <= endIndex; i++) {
-    items.push({
-      // index is required so we know the exact row of data to display
-      index: i,
-      style: {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: rowHeight + "px",
-        transform: "translateY(" + i * rowHeight + "px)"
-      }
-    });
-  }
-
-  var handleScroll = function handleScroll(event) {
-    setScrollTop(event.currentTarget.scrollTop);
-  };
-
-  React__default.useEffect(function () {
-    if (ref && ref.current) {
-      var element = ref.current;
-      element.addEventListener("scroll", handleScroll);
-      return function () {
-        return element.removeEventListener("scroll", handleScroll);
-      };
-    }
-
-    return;
-  }, [ref]);
-  return {
-    items: items
-  };
-};
-
 /**
  * useFetch is a hook for fetching JSON data.
  */
@@ -1469,8 +1014,6 @@ var useFetch = function useFetch(url, initialData) {
 
 exports.useFetch = useFetch;
 exports.useFetchRefreshToken = useFetchRefreshToken;
-exports.useFooter = useFooter;
 exports.useIntersectionObserver = useIntersectionObserver;
-exports.useNavbar = useNavbar;
 exports.useVirtualList = useVirtualList;
 //# sourceMappingURL=dicty-hooks.cjs.development.js.map
