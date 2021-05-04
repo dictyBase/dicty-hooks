@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/dictyBase/dicty-hooks/compare/2.1.0...3.0.0) (2021-05-04)
+
+
+### Features
+
+* remove useFooter and useNavbar ([4c18e21](https://github.com/dictyBase/dicty-hooks/commit/4c18e2127564184c5bc3db61fa047fd5d9dfc517))
+
+
+### BREAKING CHANGES
+
+* useFooter and useNavbar have been removed. It is recommended to use useFetch instead.
+
 # [2.1.0](https://github.com/dictyBase/dicty-hooks/compare/2.0.0...2.1.0) (2021-05-04)
 
 
