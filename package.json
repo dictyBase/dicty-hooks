@@ -1,6 +1,6 @@
 {
   "name": "dicty-hooks",
-  "version": "0.0.0-semantically-released",
+  "version": "2.1.0",
   "author": "wildlifehexagon",
   "module": "dist/dicty-hooks.esm.js",
   "license": "BSD-2-Clause",
