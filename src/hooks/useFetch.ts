@@ -1,11 +1,16 @@
 import React from "react"
 
+type UseFetch<T> = {
+  error: boolean
+  data: T
+}
+
 /**
  * useFetch is a hook for fetching JSON data.
  */
-const useFetch = (url: string, initialData = {}) => {
-  const [data, setData] = React.useState(initialData)
-  const [error, setError] = React.useState(false)
+const useFetch = <T>(url: string, initialData: T = {} as T): UseFetch<T> => {
+  const [data, setData] = React.useState<T>(initialData)
+  const [error, setError] = React.useState<boolean>(false)
 
   React.useEffect(() => {
     let didCancel = false
